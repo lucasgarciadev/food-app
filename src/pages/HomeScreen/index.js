@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
-import { Container, CategoryArea, CategoryList, ProductArea, ProductList } from './styled';
+import { Container, 
+        CategoryArea, 
+        CategoryList, 
+        ProductArea, 
+        ProductList, 
+        ProductPaginationArea, 
+        ProductPaginationItem
+    } from './styled';
 import ReactTooltip from 'react-tooltip';
 
 import api from '../../api';
@@ -16,13 +23,17 @@ export default () => {
     const [headerSearch, setHeaderSearch]= useState('');
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
+    const [totalPages, setTotalPages] = useState(0);
 
     const [activeCategory, setActiveCategory] = useState(0);
+    const [activePage, setActivePage] = useState(0);
 
     const getProducts = async () => {
         const prods = await api.getProducts();
         if(prods.error == '') {
             setProducts(prods.result.data);
+            setTotalPages(prods.result.pages);
+            setActivePage(prods.result.page);
         }
     }
 
@@ -39,8 +50,9 @@ export default () => {
     }, []);
 
     useEffect(() => {
+        setProducts([]);
         getProducts();
-    }, [activeCategory])
+    }, [activeCategory, activePage])
 
     return (
         <Container>
@@ -79,6 +91,21 @@ export default () => {
                         )}
                     </ProductList>
                 </ProductArea>            
+            }
+
+            {totalPages > 0 &&
+                <ProductPaginationArea>
+                    {Array(8).fill(0).map((item, index)=>
+                        <ProductPaginationItem 
+                            key={index} 
+                            active={activePage} 
+                            current={index + 1}
+                            onClick={() => setActivePage(index + 1)}
+                        >
+                            {index + 1}
+                        </ProductPaginationItem>
+                    )}
+                </ProductPaginationArea>
             }
             
 
