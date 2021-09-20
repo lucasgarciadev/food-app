@@ -6,8 +6,23 @@ export default {
         const json = await res.json();
         return json;
     },
-    getProducts: async () => {
-        const res = await fetch(`${BASE_API}/products`);
+    getProducts: async (category, page, search) => {
+
+        let fields = {};
+
+        if(category != 0) {
+            fields.category = category;
+        }
+        if(page >  0) {
+            fields.page = page;
+        }
+        if(search != 0) {
+            fields.search = search;
+        }
+
+        let queryString = new URLSearchParams(fields).toString();
+
+        const res = await fetch(`${BASE_API}/products?${queryString}`);
         const json = await res.json();
         return json;
     }

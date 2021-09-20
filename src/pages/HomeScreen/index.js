@@ -16,6 +16,8 @@ import Header from '../../components/Header';
 import CategoryItem from '../../components/CategoryItem';
 import ProductItem from '../../components/ProductItem';
 
+let searchTimer = null;
+
 export default () => {
 
     const history = useHistory();
@@ -26,10 +28,11 @@ export default () => {
     const [totalPages, setTotalPages] = useState(0);
 
     const [activeCategory, setActiveCategory] = useState(0);
-    const [activePage, setActivePage] = useState(0);
+    const [activePage, setActivePage] = useState(1);
+    const [activeSearch, setActiveSearch] = useState('');
 
     const getProducts = async () => {
-        const prods = await api.getProducts();
+        const prods = await api.getProducts(activeCategory, activePage, activeSearch);
         if(prods.error == '') {
             setProducts(prods.result.data);
             setTotalPages(prods.result.pages);
@@ -52,7 +55,17 @@ export default () => {
     useEffect(() => {
         setProducts([]);
         getProducts();
-    }, [activeCategory, activePage])
+    }, [activeCategory, activePage, activeSearch]);
+
+    useEffect(() => {
+        clearTimeout(searchTimer);
+
+        searchTimer = setTimeout(() => {
+            setActiveSearch(headerSearch);
+            console.log(headerSearch);
+        }, 2000)
+
+    }, [headerSearch]);
 
     return (
         <Container>
@@ -95,7 +108,7 @@ export default () => {
 
             {totalPages > 0 &&
                 <ProductPaginationArea>
-                    {Array(8).fill(0).map((item, index)=>
+                    {Array(totalPages).fill(0).map((item, index)=>
                         <ProductPaginationItem 
                             key={index} 
                             active={activePage} 
