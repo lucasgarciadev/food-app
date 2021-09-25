@@ -15,6 +15,8 @@ import api from '../../api';
 import Header from '../../components/Header';
 import CategoryItem from '../../components/CategoryItem';
 import ProductItem from '../../components/ProductItem';
+import Modal from '../../components/Modal';
+import ModalProduct from '../../components/ModalProduct';
 
 let searchTimer = null;
 
@@ -27,23 +29,33 @@ export default () => {
     const [products, setProducts] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
 
+    const [modalStatus, setModalStatus] = useState(false);
+    const [modalData, setModalData] = useState({});
+
     const [activeCategory, setActiveCategory] = useState(0);
     const [activePage, setActivePage] = useState(1);
     const [activeSearch, setActiveSearch] = useState('');
 
     const getProducts = async () => {
         const prods = await api.getProducts(activeCategory, activePage, activeSearch);
-        if(prods.error == '') {
+        if(prods.error === '') {
             setProducts(prods.result.data);
             setTotalPages(prods.result.pages);
             setActivePage(prods.result.page);
+
+            console.log(prods.result);
         }
     }
+
+    const handleProductClick = data => {
+        setModalData(data);
+        setModalStatus(true);
+    }    
 
     useEffect(() =>{
         const getCategories = async () => {
             const cat = await api.getCategories();
-            if(cat.error == '') {
+            if(cat.error === '') {
                 setCategories(cat.result);
                 console.log(cat.result);
             }
@@ -100,7 +112,11 @@ export default () => {
                 <ProductArea>
                     <ProductList>
                         {products.map((i, k) => 
-                            <ProductItem key={k} data={i} />
+                            <ProductItem 
+                                key={k} 
+                                data={i} 
+                                onClick={handleProductClick} 
+                            />
                         )}
                     </ProductList>
                 </ProductArea>            
@@ -120,6 +136,10 @@ export default () => {
                     )}
                 </ProductPaginationArea>
             }
+
+            <Modal status={modalStatus} setStatus={setModalStatus} >
+                <ModalProduct data={modalData} setStatus={setModalStatus} />
+            </Modal>
             
 
         </Container>

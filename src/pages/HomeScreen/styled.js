@@ -27,7 +27,7 @@ export const ProductPaginationArea = styled.div`
     justify-content:center;
 `;
 export const ProductPaginationItem = styled.div`
-    background-color: ${props => props.active == props.current ? "#CCC" : "#FFF"};
+    background-color: ${props => props.active === props.current ? "#CCC" : "#FFF"};
     margin-right:10px;
     box-shadow: 0 3px 6px rgba(0,0,0, .16);
     padding:5px 10px;

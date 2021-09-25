@@ -10,13 +10,13 @@ export default {
 
         let fields = {};
 
-        if(category != 0) {
+        if(category !== 0) {
             fields.category = category;
         }
         if(page >  0) {
             fields.page = page;
         }
-        if(search != 0) {
+        if(search !== 0) {
             fields.search = search;
         }
 

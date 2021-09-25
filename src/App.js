@@ -13,8 +13,6 @@ import MenuItem from './components/MenuItem'
 import { Container, Menu, PageBody } from './AppStyled';
 
 export default () => {
-    const name = useSelector(state => state.user.name);
-
     return (
         <BrowserRouter>
             <Container>
